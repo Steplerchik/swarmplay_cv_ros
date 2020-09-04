@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<launch>
+
+<!--     <node pkg="master_discovery_fkie" type="master_discovery" name="master_discovery" respawn="true"> -->
+    <node pkg="fkie_master_discovery" type="master_discovery" name="master_discovery" respawn="true">
+        <rosparam file="$(find swarmplay_cv_ros)/config/stepan_multimaster.yaml" command="load" />
+    </node>
+<!--     <node pkg="master_sync_fkie" type="master_sync" name="master_sync" respawn="true"/> -->
+    <node pkg="fkie_master_sync" type="master_sync" name="master_sync" respawn="true"/>
+
+</launch>
