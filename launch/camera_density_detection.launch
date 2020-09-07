@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <launch>
+    <include file="$(find swarmplay_cv_ros)/launch/multimaster.launch" />
+
     <group ns = "camera">
         <node pkg = "swarmplay_cv_ros" name="camera_detection_node" type = "tic_tac_toe_density_detection.py" respawn="true" output="screen" >
                         <param name="human_side_is_zeros" value="true"/>
-                        <param name="camera_channel" value="0"/>
+                        <param name="camera_channel" value="2"/>
         </node>
     </group>
 </launch>

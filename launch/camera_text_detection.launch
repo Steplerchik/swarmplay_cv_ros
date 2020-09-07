@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <launch>
+    <include file="$(find swarmplay_cv_ros)/launch/multimaster.launch" />
+
     <group ns = "camera">
         <node pkg = "swarmplay_cv_ros" name="camera_detection_node" type = "tic_tac_toe_text_detection.py" respawn="true" output="log" >
                         <param name="human_side_is_zeros" value="true"/>
