@@ -16,6 +16,7 @@ class CameraDetectionNode(object):
     def __init__(self):
         rospy.init_node('camera_detection_node', anonymous=True)
         self.publisher_cells = rospy.Publisher("/human_turns", String, queue_size=0.1)
+        rospy.Subscriber("/new_game", String, self.new_game_callback)
         self.human_side_is_zeros = bool(rospy.get_param("~human_side_is_zeros", True))
         self.camera_channel = rospy.get_param("~camera_channel", 2)
         self.videoCaptureObject = cv2.VideoCapture(self.camera_channel)
@@ -26,6 +27,10 @@ class CameraDetectionNode(object):
         self.stable_output_tick_threshold = 0
 
         self.integrate_rate = rospy.Rate(INTEGRATE_RATE)
+
+    def new_game_callback(self, data):
+        if data.data == "new_game":
+            self.output_history = ''
 
     def current_status_update(self):
         ret, img = self.videoCaptureObject.read()
@@ -70,7 +75,7 @@ class CameraDetectionNode(object):
 
     def publish_cells(self):
         self.current_status_update()
-        if self.output != '' and self.stable_output_tick_threshold > 50 and self.output not in self.output_history:
+        if self.output != '' and self.stable_output_tick_threshold > 100 and self.output not in self.output_history:
             self.stable_output_tick_threshold = 0
             self.output_history += self.output
             self.publisher_cells.publish(self.output)
