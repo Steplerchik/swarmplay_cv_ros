@@ -9,8 +9,8 @@
         </node>
     </group>
 
-    <group ns = "decision">
-        <node pkg = "swarmplay_cv_ros" name="decision_node" type = "move_dron.py" respawn="true" output="screen" >
-        </node>
-    </group>
+<!--     <group ns = "decision"> -->
+<!--         <node pkg = "swarmplay_cv_ros" name="decision_node" type = "move_dron.py" respawn="true" output="screen" > -->
+<!--         </node> -->
+<!--     </group> -->
 </launch>
