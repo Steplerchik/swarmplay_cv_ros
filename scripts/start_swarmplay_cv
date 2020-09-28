@@ -1,4 +1,4 @@
 #!/bin/bash
 
-source /home/stepan/workspaces/swarmplay_cv_ros_ws/devel/setup.bash --extend
+source /home/stepan/workspaces/swarmplay_cv_ws/devel/setup.bash --extend
 roslaunch swarmplay_cv_ros camera_density_detection.launch
