@@ -16,32 +16,40 @@ class CameraDetectionNode(object):
     def __init__(self):
         rospy.init_node('camera_detection_node', anonymous=True)
         self.publisher_cells = rospy.Publisher("/human_turns", String, queue_size=0.1)
+        rospy.Subscriber("/move_drone", String, self.new_game_callback)
         self.human_side_is_zeros = bool(rospy.get_param("~human_side_is_zeros", True))
         self.camera_channel = rospy.get_param("~camera_channel", 2)
         self.videoCaptureObject = cv2.VideoCapture(self.camera_channel)
+        self.videoCaptureObject.set(cv2.CAP_PROP_ZOOM, 253)
+        self.videoCaptureObject.set(cv2.CAP_PROP_TILT, 7200)
         self.output = ''
         self.output_history = ''
         self.stable_output_tick_threshold = 0
 
         self.integrate_rate = rospy.Rate(INTEGRATE_RATE)
 
+    def new_game_callback(self, data):
+        if data.data == "New_game":
+            self.output_history = ''
+            print('Output history cleared')
+
     def current_status_update(self):
         ret, img = self.videoCaptureObject.read()
         grayImage = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        (thresh, img) = cv2.threshold(grayImage, 220, 255, cv2.THRESH_BINARY)
+        (thresh, img) = cv2.threshold(grayImage, 190, 255, cv2.THRESH_BINARY)
         img = cv2.erode(img, kernel, iterations=1)
 
-        desk_img[0] = img[15:134, 75:220]
-        desk_img[1] = img[20:134, 240:390]
-        desk_img[2] = img[25:134, 410:560]
+        desk_img[0] = img[0:148, 35:208]
+        desk_img[1] = img[0:148, 223:400]
+        desk_img[2] = img[0:148, 418:585]
 
-        desk_img[3] = img[158:274, 75:230]
-        desk_img[4] = img[158:274, 240:400]
-        desk_img[5] = img[158:274, 410:565]
+        desk_img[3] = img[164:304, 26:200]
+        desk_img[4] = img[163:308, 219:397]
+        desk_img[5] = img[160:307, 415:596]
 
-        desk_img[6] = img[293:414, 75:230]
-        desk_img[7] = img[293:414, 240:400]
-        desk_img[8] = img[293:414, 410:570]
+        desk_img[6] = img[320:466, 18:193]
+        desk_img[7] = img[320:466, 213:393]
+        desk_img[8] = img[324:466, 412:597]
 
         current_output = ''
 
@@ -54,10 +62,10 @@ class CameraDetectionNode(object):
             white_density = cv2.countNonZero(cell) / cell.size
 
             if not self.human_side_is_zeros:
-                if 0.08 <= white_density <= 0.30 and str(i + 1) not in self.output_history:
+                if 0.08 <= white_density <= 0.25 and str(i + 1) not in self.output_history:
                     current_output = str(i + 1)
             else:
-                if 0.30 <= white_density <= 0.6 and str(i + 1) not in self.output_history:
+                if 0.25 <= white_density <= 0.6 and str(i + 1) not in self.output_history:
                     current_output = str(i + 1)
 
         if self.output == current_output:
